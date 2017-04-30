@@ -5,10 +5,10 @@ import { baseUrl, token, contentType } from './env'
 import axios from 'axios'
 
 export default async(type = 'get', url = '', params = {}, mothod = 'axios') => {
-    // 使用axios
+    let res = null
+        // 使用axios
     if (mothod === 'axios') {
         type = type.toLowerCase()
-        let res
         await axios({
             method: type,
             url: url,
@@ -60,61 +60,70 @@ export default async(type = 'get', url = '', params = {}, mothod = 'axios') => {
                 console.log(response.config)
             }
         })
-        return res
     } else {
-        // 使用原生js
-        let requestObj
-        url = baseUrl + url
-        type = type.toUpperCase()
+        await new Promise(function (resolve, reject) {
+            // 使用原生js
+            let requestObj
+            url = baseUrl + url
+            type = type.toUpperCase()
 
-        if (type === 'GET') {
-            let dataStr = '' // 数据拼接字符串
-            Object.keys(params).forEach(key => {
-                dataStr += key + '=' + params[key] + '&'
-            })
+            if (type === 'GET') {
+                let dataStr = '' // 数据拼接字符串
+                Object.keys(params).forEach(key => {
+                    dataStr += key + '=' + params[key] + '&'
+                })
 
-            if (dataStr !== '') {
-                dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'))
-                url = url + '?' + dataStr
-            }
-        }
-
-        if (window.XMLHttpRequest) {
-            requestObj = new XMLHttpRequest()
-            if (requestObj.overrideMimeType) {
-                requestObj.overrideMimeType('text/xml')
-            }
-        } else if (window.ActiveXObject) {
-            // try {
-            //     requestObj = new ActiveXObject('Msxml2.XMLHTTP')
-            // } catch (e) {
-            //     try {
-            //         requestObj = new ActiveXObject('Microsoft.XMLHTTP')
-            //     } catch (e) {}
-            // }
-        }
-
-        let sendData = ''
-        if (type === 'POST') {
-            sendData = JSON.stringify(params)
-        }
-
-        requestObj.open(type, url, true)
-        requestObj.setRequestHeader('Content-type', contentType)
-        requestObj.setRequestHeader(token.key, token.value)
-        requestObj.onreadystatechange = () => {
-            if (requestObj.readyState === 4) {
-                if (requestObj.status === 200) {
-                    let obj = requestObj.response
-                    if (typeof obj !== 'object') {
-                        obj = JSON.parse(obj)
-                    }
-                    return obj
-                } else {
-                    throw new Error(requestObj.response)
+                if (dataStr !== '') {
+                    dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'))
+                    url = url + '?' + dataStr
                 }
             }
-        }
-        requestObj.send(sendData)
+
+            if (window.XMLHttpRequest) {
+                requestObj = new XMLHttpRequest()
+                if (requestObj.overrideMimeType) {
+                    requestObj.overrideMimeType('text/xml')
+                }
+            } else if (window.ActiveXObject) {
+                // try {
+                //     requestObj = new ActiveXObject('Msxml2.XMLHTTP')
+                // } catch (e) {
+                //     try {
+                //         requestObj = new ActiveXObject('Microsoft.XMLHTTP')
+                //     } catch (e) {}
+                // }
+            }
+
+            let sendData = ''
+            if (type === 'POST') {
+                sendData = JSON.stringify(params)
+            }
+
+            requestObj.open(type, url, true)
+            requestObj.setRequestHeader('Content-type', contentType)
+            requestObj.setRequestHeader(token.key, token.value)
+            requestObj.send(sendData)
+            requestObj.onreadystatechange = () => {
+                if (requestObj.readyState === 4) {
+                    if (requestObj.status === 200) {
+                        let obj = requestObj.response
+                        if (typeof obj !== 'object') {
+                            obj = JSON.parse(obj)
+                        }
+                        resolve(obj)
+                    } else {
+                        reject(new Error(requestObj.response))
+                    }
+                }
+            }
+            requestObj.onerror = function () {
+                reject(new Error('XMLHttpRequest Error: ' + this.statusText))
+            }
+        }).then(function (value) {
+            res = value
+        }, function (error) {
+            throw error
+        })
     }
+    return res
 }

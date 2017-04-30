@@ -17,7 +17,7 @@ export default {
         // 获取大区列表
         getArea().then(res => {
             this.groupArea = res
-            console.log('2' + res)
+            console.log('2****' + res)
         })
     },
     methods: {
