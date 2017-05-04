@@ -102,7 +102,6 @@ export default async(type = 'get', url = '', params = {}, mothod = 'axios') => {
             requestObj.open(type, url, true)
             requestObj.setRequestHeader('Content-type', contentType)
             requestObj.setRequestHeader(token.key, token.value)
-            requestObj.send(sendData)
             requestObj.onreadystatechange = () => {
                 if (requestObj.readyState === 4) {
                     if (requestObj.status === 200) {
@@ -119,6 +118,7 @@ export default async(type = 'get', url = '', params = {}, mothod = 'axios') => {
             requestObj.onerror = function () {
                 reject(new Error('XMLHttpRequest Error: ' + this.statusText))
             }
+            requestObj.send(sendData)
         }).then(function (value) {
             res = value
         }, function (error) {

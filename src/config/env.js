@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'development') {
     routerMode = 'hash'
     token = {
         'key': 'DAIWAN-API-TOKEN',
-        'value': '4BB58-9F6DB-729DF-89BBB'
+        'value': '071F0-311C3-BC7A7-0F741'
     }
     contentType = 'text/html; charset=utf-8'
 } else {
@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
     routerMode = 'hash'
     token = {
         'key': 'DAIWAN-API-TOKEN',
-        'value': '4BB58-9F6DB-729DF-89BBB'
+        'value': '071F0-311C3-BC7A7-0F741'
     }
     contentType = 'text/html; charset=utf-8'
 }

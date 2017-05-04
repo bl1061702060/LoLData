@@ -28,6 +28,7 @@ module.exports = {
         'indent': ["error", 4, { "VariableDeclarator": { "var": 2, "let": 2, "const": 3 } }],
         "space-before-function-paren": ["error", { "anonymous": "always", "named": "never", "asyncArrow": "never" }],
         'no-multi-str': "off", //不允许多行字符串
-        'eol-last': ["error", "never"] //否在文件最后多加一行新的空行
+        'eol-last': ["error", "never"], //否在文件最后多加一行新的空行
+        'no-new': "off"
     }
 }
