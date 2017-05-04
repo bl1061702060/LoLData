@@ -1,5 +1,5 @@
 # lol_data
-
+## 这是一个查询英雄联盟数据的网站，使用Vue + Vuex + ElementUI 开发，后台是使用daiwan的第三方接口。
 > a web app for search lol game data
 
 ## Build Setup
