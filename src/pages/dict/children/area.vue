@@ -1,6 +1,6 @@
 <template>
     <div>
-        这是视频区
+        这是大区数据区
     </div>
 </template>
 <script>

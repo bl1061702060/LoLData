@@ -1,6 +1,6 @@
 <template>
     <div>
-        这是视频区
+        这是周免英雄区
     </div>
 </template>
 <script>

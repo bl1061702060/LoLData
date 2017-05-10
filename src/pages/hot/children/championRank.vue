@@ -1,6 +1,6 @@
 <template>
     <div>
-        这是视频区
+        英雄rank区
     </div>
 </template>
 <script>

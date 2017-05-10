@@ -1,6 +1,6 @@
 <template>
     <div>
-        这是视频区
+        这是联盟字典
     </div>
 </template>
 <script>

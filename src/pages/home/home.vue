@@ -5,12 +5,53 @@
             <div class="filter">
             </div>
             <div class="normal">
-                <div class="main-item">
+                <div class="m-search">
                     <lo-search :placeholder="placeholder" :submit="search" @input="syncValue">
                     </lo-search>
                 </div>
-                <div class="main-item list-block"> 
-                    <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
+                <section v-if= "isSearched" class="m-content list-block">
+                    <el-row class="row-header">
+                        <el-col :span="8">
+                            最近搜索
+                        </el-col>
+                        <el-col :span="16">
+                            搜索结果
+                        </el-col>
+                    </el-row>
+                    <el-row class="row-content">
+                        <el-col :span="8">
+                            <ul>
+                                <li class="h-link" v-for="item in searchHistory" @click="search(item)">
+                                    {{ item }}
+                                </li>
+                            </ul>
+                        </el-col>
+                        <el-col :span="16">
+                           <ul>
+                                <li class="u-link" v-for="item in userAreaList" @click="rowClick(item)">
+                                    <span>
+                                         <el-popover
+                                            placement="right"
+                                            width="200"
+                                            trigger="hover"
+                                            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                                            <span slot v-html="getUserHtml(item)"></span>
+                                            <span slot="reference">{{item.name}}</span>
+                                        </el-popover>
+                                    </span>
+                                    <span>
+                                        {{getAreaName(item.area_id)}}
+                                    </span>
+                                    <span>
+                                        {{getAreaIsp(item.area_id)}}
+                                    </span>
+                                </li>
+                            </ul>
+                        </el-col>
+                    </el-row>
+                </section >
+                <section v-else class="m-content"> 
+                    <el-tabs v-model="activeName2" type="card">
                         <el-tab-pane label="视频" name="first">
                             <el-carousel height="300px">
                             <el-carousel-item v-for="item in 4" :key="item">
@@ -26,9 +67,8 @@
                             </el-carousel>
                         </el-tab-pane>
                     </el-tabs>
-                </div>
+                </section>
             </div>
-            
         </main>
         <lo-footer></lo-footer>
     </div>
@@ -38,26 +78,173 @@
     import loHeader from '../../components/header/header'
     import loSearch from '../../components/common/search'
     import loFooter from '../../components/footer/footer'
-
+    import {getTierInfo, getUserArea, getUserIcon} from '../../service/getUser'
+    import { getArea } from '../../service/getArea'
+    import { getStorage, setStorage } from '../../config/util'
     export default {
         data() {
             return {
+                isSearched: false,
                 activeIndex: '1',
                 placeholder: '搜索召唤师名称',
-                activeName2: 'first'
+                activeName2: 'first',
+                searchValue: '', // 搜索内容
+                userAreaList: [], // 搜索返回的结果
+                searchHistory: [], // 搜索历史记录
+                showHistory: true, // 是否显示历史记录，只有在返回搜索结果后隐藏
+                emptyResult: false, // 搜索结果为空时显示
+                tierList: [], // 段位新
+                areaList: [] // 大区信息
             }
+        },
+        mounted() {
+              // 获取段位信息
+            getTierInfo().then(res => {
+                this.tierList = res || []
+            })
+
+            // 获取大区信息
+            getArea().then(res => {
+                this.areaList = res.data || []
+            })
+        },
+        computed: {
+
         },
         methods: {
             // 同步子组件中的 input的value
             syncValue(data) {
                 this.searchValue = data
             },
-            // 点击搜索跳转到用户页面
-            search() {
-                this.$router.push('./user?name=' + this.searchValue)
+            // 提示popover
+            async getUserHtml(row) {
+                if (!row) {
+                    return
+                }
+                let url = null
+                 // 1.获取头像
+                try {
+                    await getUserIcon(row.icon_id).then(res => {
+                        if (res) {
+                            if (res.code === 0) {
+                                url = res.data ? (res.data[0] ? res.data[0].return : '') : ''
+                            } else if (res.code === 1) {
+                                url = ''
+                            } else {
+                                throw new Error(res.msg)
+                            }
+                        }
+                    })
+                } catch (e) {
+                    console.log(e)
+                }
+                return await `<div><img height="40" width="40" src="${url}"/><br/>${this.getTierName(row)}<div>`
             },
-            handleClick(tab, event) {
-                console.log(tab, event)
+            // 获取段位名称
+            getTierName(row) {
+                if (!row) {
+                    return
+                }
+                if (Object.prototype.toString.call(this.tierList) === '[object Array]' && this.tierList.length > 0) {
+                    for (let i = 0; i < this.tierList.length; i++) {
+                        let obj = this.tierList[i]
+                        if (row.tier === +obj.tier && row.queue === +obj.queue) {
+                            return obj.description
+                        }
+                    }
+                }
+            },
+
+            // 获取大区名称
+            getAreaName(id) {
+                if (Object.prototype.toString.call(this.areaList) === '[object Array]' && this.areaList.length > 0) {
+                    for (let i = 0; i < this.areaList.length; i++) {
+                        let item = this.areaList[i]
+                        if (id === item.id) {
+                            return item.name
+                        }
+                    }
+                }
+            },
+
+            // 获取大区isp
+            getAreaIsp(id) {
+                if (Object.prototype.toString.call(this.areaList) === '[object Array]' && this.areaList.length > 0) {
+                    for (let i = 0; i < this.areaList.length; i++) {
+                        let item = this.areaList[i]
+                        if (id === item.id) {
+                            return item.isp
+                        }
+                    }
+                }
+            },
+            // 搜索方法，搜索并保存历史
+            async search(searchValue) {
+                if (searchValue && typeof searchValue === 'string') {
+                    this.searchValue = searchValue
+                }
+                this.isSearched = true
+                // 隐藏历史记录
+                this.showHistory = false
+                // 1.获取搜索结果
+                try {
+                    await getUserArea(this.searchValue).then(res => {
+                        if (res) {
+                            if (res.code === 0) {
+                                this.userAreaList = res.data || []
+                            } else if (res.code === 1) {
+                                this.userAreaList = []
+                            } else {
+                                this.showHistory = true
+                                throw new Error(res.msg)
+                            }
+                        }
+                    })
+                } catch (e) {
+                    console.log(e)
+                }
+                this.emptyResult = !this.userAreaList.length
+                this.showHistory = this.emptyResult
+                if (this.emptyResult) {
+                    this.noResultMsg = '抱歉，未找到名为 ' + this.searchValue + ' 的召唤师'
+                }
+                // 2.如果没有则新增，如果有则不做重复储存，判断完成后进入下一页
+                let history = getStorage('searchHistory')
+                if (history) {
+                    let checkrepeat = false
+                    this.searchHistory = JSON.parse(history)
+                    this.searchHistory.forEach(item => {
+                        if (item === this.searchValue) {
+                            checkrepeat = true
+                        }
+                    })
+                    if (!checkrepeat) {
+                        if (this.searchHistory.length >= 20) {
+                            this.searchHistory.pop() // 删除最早的那个记录
+                            this.searchHistory.unshift(this.searchValue) // 记录最新的搜索内容
+                        } else {
+                            this.searchHistory.unshift(this.searchValue) // 记录最新的搜索内容
+                        }
+                    }
+                } else {
+                    this.searchHistory.shift(this.searchValue)
+                }
+                setStorage('searchHistory', this.searchHistory)
+            },
+            // 点击召唤跳转到召唤师信息页面
+            rowClick(row) {
+                if (row && row.qquin) {
+                    this.$router.push({
+                        name: 'user',
+                        params: {
+                            id: row.qquin
+                        }
+                    })
+                }
+            },
+            // 点击图标刷新页面
+            reload() {
+                window.location.reload()
             }
         },
         components: {
@@ -75,38 +262,72 @@
 
         .filter {
             @include wh(100%, 100%);
-            background: url('../../assets/img/bg2.jpeg') no-repeat;
-            background-size:cover;
-            z-index: -1;
-
-            filter: url(data:image/svg+xml;base64,77u/PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxmaWx0ZXIgaWQ9ImJsdXIiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjI1IiAvPjwvZmlsdGVyPjwvc3ZnPg==#blur);
-
-            -webkit-filter: blur(10px); /* Chrome, Opera */
-            -moz-filter: blur(10px);
-            -ms-filter: blur(10px);    
-            filter: blur(10px);
-            filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false); /* IE6~IE9 */
+            background-color: #324157;
+           
         }
 
         .normal {
             @include wh(100%, 100%);
             @include fj(column, start);
             z-index: 0;
-            padding-top: 120px;
+            padding: 60px;
             top: 60px;
             position: absolute;
             background-color: rgba(255, 0, 0, 0);
 
-            .main-item {
-                width:100%;
-                max-width: 720px;
+            .m-search {
+                width: 720px;
+            }
+            .m-content {
+                margin-top: 80px;
+                width: 840px;
+            }
+            .list-block {
+                box-shadow: 0px 0px 15px #000000;
+                .row-header {
+                    height: 41px;
+                    line-height: 40px;
+                    box-shadow: inset 0px 1px 5px #acc7ef;
+                    background-color: #324157;
+                    .el-col {
+                        color: #adbac9;
+                        text-align: center;
+                    }
+                }
+                .row-content {
+                    box-shadow: inset 0px 0px 5px #acc7ef;
+                    background-color: #324157;
+                    ul {
+                        height: 480px;
+                        padding: 20px;
+                        overflow-y: auto;
+                        .h-link {
+                            color: #adbac9;
+                            padding: 3px 0;
+                            &:hover {
+                                text-decoration: underline;
+                                color: #20a0ff;
+                            }
+                        }
+                        .u-link {
+                            padding: 8px 0;
+                            color: #adbac9;
+                            @include fj(row, start);
+                            span {
+                                width: calc(100%/3);
+                                color: #adbac9;
+                                text-align: left;
+
+                                &:hover {
+                                    color:#20a0ff;
+                                    text-decoration: underline;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-    }
-    .list-block {
-        margin-top: 80px;
-        text-align: center;
-        background-color: white;
     }
     .el-carousel__item:nth-child(2n) {
         background-color: #99a9bf;

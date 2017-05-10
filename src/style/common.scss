@@ -89,6 +89,52 @@ html,
 body {
     height: 100%;
     width: 100%;
+    min-width: 1024px;
     background-color: #F5F5F5;
     zoom: 1;
+}
+
+// tabs 
+.el-tabs {
+    &.el-tabs--card,
+    &.el-tabs--border-card {
+        background: #324157;
+        border: solid 1px #8391a5;
+        box-shadow: 0px 0px 15px #000000;
+        .el-tabs__header .el-tabs__item {
+            border: none;
+            &.is-active {
+                border: none;
+            }
+        }
+    }
+    .el-tabs__header {
+        border: none;
+    }
+}
+
+// table
+.el-table {
+    tr {
+        background-color: #324157 !important;
+    }
+    td,
+    th.is-leaf {
+        border: none !important;
+    }
+    .cell {
+        color: #bcc8d6 !important;
+    }
+    .el-table__body tr.current-row>td {
+        background-color: #506688 !important;
+    }
+    &--enable-row-hover .el-table__body {
+        table {
+            border: none;
+        }
+        tr:hover>td {
+            background-color: rgba(237, 247, 255, 0.38) !important;
+            background-clip: inherit !important;
+        }
+    }
 }

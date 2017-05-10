@@ -1,6 +1,6 @@
 <template>
     <div>
-        这是视频区
+        这是段位信息区
     </div>
 </template>
 <script>

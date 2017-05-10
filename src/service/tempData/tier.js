@@ -1,9 +1,113 @@
 export default [{
     tier: '5',
-    queue: '4',
-    description: '青铜5'
+    queue: '0',
+    description: '青铜1'
+}, {
+    tier: '5',
+    queue: '1',
+    description: '青铜2'
+}, {
+    tier: '5',
+    queue: '2',
+    description: '青铜3'
+}, {
+    tier: '5',
+    queue: '3',
+    description: '青铜4'
 }, {
     tier: '5',
     queue: '4',
     description: '青铜5'
+}, {
+    tier: '4',
+    queue: '0',
+    description: '白银1'
+}, {
+    tier: '4',
+    queue: '1',
+    description: '白银2'
+}, {
+    tier: '4',
+    queue: '2',
+    description: '白银3'
+}, {
+    tier: '4',
+    queue: '3',
+    description: '白银4'
+}, {
+    tier: '4',
+    queue: '4',
+    description: '白银5'
+}, {
+    tier: '3',
+    queue: '0',
+    description: '黄金1'
+}, {
+    tier: '3',
+    queue: '1',
+    description: '黄金2'
+}, {
+    tier: '3',
+    queue: '2',
+    description: '黄金3'
+}, {
+    tier: '3',
+    queue: '3',
+    description: '黄金4'
+}, {
+    tier: '3',
+    queue: '4',
+    description: '黄金5'
+}, {
+    tier: '3',
+    queue: '0',
+    description: '白金1'
+}, {
+    tier: '2',
+    queue: '1',
+    description: '白金2'
+}, {
+    tier: '2',
+    queue: '2',
+    description: '白金3'
+}, {
+    tier: '2',
+    queue: '3',
+    description: '白金4'
+}, {
+    tier: '2',
+    queue: '4',
+    description: '白金5'
+}, {
+    tier: '1',
+    queue: '0',
+    description: '钻石1'
+}, {
+    tier: '1',
+    queue: '1',
+    description: '钻石2'
+}, {
+    tier: '1',
+    queue: '2',
+    description: '钻石3'
+}, {
+    tier: '1',
+    queue: '3',
+    description: '钻石4'
+}, {
+    tier: '1',
+    queue: '4',
+    description: '钻石5'
+}, {
+    tier: '6',
+    queue: '0',
+    description: '超凡大师'
+}, {
+    tier: '0',
+    queue: '0',
+    description: '最强王者'
+}, {
+    tier: '255',
+    queue: '255',
+    description: '无段位'
 }]
