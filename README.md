@@ -26,5 +26,22 @@ npm run e2e
 # run all tests
 npm test
 ```
+## 1. 运行帮助
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+> 目前项目使用的是daiwan 提供的临时token，可以自己到 http://api.games-cube.com/ 注册获取 ，然后在 src/config/env.js 下替换成你申请的token 就可以了：
+
+``` javascript
+
+    baseUrl = '/api'
+    vbaseUrl = '/vapi'
+    routerMode = 'hash'
+    token = {
+        'key': 'DAIWAN-API-TOKEN',
+        'value': '5954F-B3B3B-AA81B-3BFC3' // 这是英雄联盟的token
+    }
+    vtoken = {
+        'key': 'DAIWAN-API-TOKEN',
+        'value': 'F8BFF-B893B-ABBB7-744BB' // 这是视频的 token
+    }
+    contentType = 'text/html; charset=utf-8'
+```
