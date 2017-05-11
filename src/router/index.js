@@ -13,6 +13,10 @@ const champion = r => require.ensure([], () => r(require('../pages/dict/children
 const tierQueue = r => require.ensure([], () => r(require('../pages/dict/children/tierQueue')), 'tierQueue')
 
 const video = r => require.ensure([], () => r(require('../pages/video/video')), 'video')
+const videoDetail = r => require.ensure([], () => r(require('../pages/video/children/videoDetail')))
+const newestVideo = r => require.ensure([], () => r(require('../pages/video/children/newstVideo')))
+const authorVideo = r => require.ensure([], () => r(require('../pages/video/children/authorVideo')))
+const heroVideo = r => require.ensure([], () => r(require('../pages/video/children/heroVideo')))
 
 export default [{
     path: '/',
@@ -77,7 +81,29 @@ export default [{
         {
             path: '/video',
             component: video,
-            children: []
+            children: [
+                // 重定向到最新视频
+                {
+                    path: '',
+                    redirect: 'newest'
+                },
+                {
+                    path: 'newest',
+                    component: newestVideo
+                },
+                {
+                    path: 'author',
+                    component: authorVideo
+                },
+                {
+                    path: 'hero',
+                    component: heroVideo
+                },
+                {
+                    path: 'videoDetail',
+                    component: videoDetail
+                }
+            ]
         }
     ]
 }]

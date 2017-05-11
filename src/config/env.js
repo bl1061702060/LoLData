@@ -7,30 +7,44 @@
  *
  */
 let baseUrl
+let vbaseUrl
 let token
+let vtoken
 let routerMode
 let contentType
 
 if (process.env.NODE_ENV === 'development') {
     baseUrl = '/api'
-    routerMode = 'history'
+    vbaseUrl = '/vapi'
+    routerMode = 'hash'
     token = {
         'key': 'DAIWAN-API-TOKEN',
-        'value': '96066-09404-F9B90-100E0'
+        'value': '5954F-B3B3B-AA81B-3BFC3'
+    }
+    vtoken = {
+        'key': 'DAIWAN-API-TOKEN',
+        'value': 'F8BFF-B893B-ABBB7-744BB'
     }
     contentType = 'text/html; charset=utf-8'
 } else {
     baseUrl = '/api'
+    vbaseUrl = '/vapi'
     routerMode = 'hash'
     token = {
         'key': 'DAIWAN-API-TOKEN',
-        'value': '96066-09404-F9B90-100E0'
+        'value': '5954F-B3B3B-AA81B-3BFC3'
+    }
+    vtoken = {
+        'key': 'DAIWAN-API-TOKEN',
+        'value': 'F8BFF-B893B-ABBB7-744BB'
     }
     contentType = 'text/html; charset=utf-8'
 }
 export {
     baseUrl,
+    vbaseUrl,
     token,
+    vtoken,
     routerMode,
     contentType
 }

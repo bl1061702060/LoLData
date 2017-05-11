@@ -33,8 +33,7 @@
                                          <el-popover
                                             placement="right"
                                             width="200"
-                                            trigger="hover"
-                                            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                                            trigger="hover">
                                             <span slot v-html="getUserHtml(item)"></span>
                                             <span slot="reference">{{item.name}}</span>
                                         </el-popover>
@@ -50,16 +49,22 @@
                         </el-col>
                     </el-row>
                 </section >
-                <section v-else class="m-content"> 
+                <section v-else class="m-content card-block"> 
                     <el-tabs v-model="activeName2" type="card">
-                        <el-tab-pane label="视频" name="first">
-                            <el-carousel height="300px">
-                            <el-carousel-item v-for="item in 4" :key="item">
-                                <h3>{{ item }}</h3>
-                            </el-carousel-item>
+                        <el-tab-pane class="first" label="视频" name="first">
+                            <el-carousel height="235px" indicator-position="inside" type="card" :autoplay=false>
+                                <el-carousel-item v-for="item in videoList" :key="item.guid">
+                                    <el-card :body-style="{ padding: '0px', height: '235px' }">
+                                        <img :src=item.img class="image" width="183" height="108" @click.stop="viewVideo(item)">
+                                        <div class="card-content">
+                                            <div class="card-title" @click.stop="viewVideo(item)" >{{item.title}}</div>
+                                            <div class="card-button" @click.stop="viewMoreVideo">更多视频</div>
+                                        </div>
+                                    </el-card>
+                                </el-carousel-item>
                             </el-carousel>
                         </el-tab-pane>
-                        <el-tab-pane label="周免" name="second">
+                        <el-tab-pane class="second" label="周免" name="second">
                             <el-carousel :interval="3000" type="card" height="300px">
                                 <el-carousel-item v-for="item in 6" :key="item">
                                 <h3>{{ item }}</h3>
@@ -78,8 +83,9 @@
     import loHeader from '../../components/header/header'
     import loSearch from '../../components/common/search'
     import loFooter from '../../components/footer/footer'
-    import {getTierInfo, getUserArea, getUserIcon} from '../../service/getUser'
+    import {getTierInfo, getUserArea} from '../../service/getUser'
     import { getArea } from '../../service/getArea'
+    import { getNewestVideos } from '../../service/getVideo'
     import { getStorage, setStorage } from '../../config/util'
     export default {
         data() {
@@ -94,11 +100,17 @@
                 showHistory: true, // 是否显示历史记录，只有在返回搜索结果后隐藏
                 emptyResult: false, // 搜索结果为空时显示
                 tierList: [], // 段位新
-                areaList: [] // 大区信息
+                areaList: [], // 大区信息
+                videoList: [] // 最新视频
             }
         },
         mounted() {
-              // 获取段位信息
+            // 获取最新视频
+            getNewestVideos(1).then(res => {
+                let arr = res.data || []
+                this.videoList = arr.splice(0, 5)
+            })
+            // 获取段位信息
             getTierInfo().then(res => {
                 this.tierList = res || []
             })
@@ -109,7 +121,6 @@
             })
         },
         computed: {
-
         },
         methods: {
             // 同步子组件中的 input的value
@@ -117,28 +128,11 @@
                 this.searchValue = data
             },
             // 提示popover
-            async getUserHtml(row) {
+            getUserHtml(row) {
                 if (!row) {
                     return
                 }
-                let url = null
-                 // 1.获取头像
-                try {
-                    await getUserIcon(row.icon_id).then(res => {
-                        if (res) {
-                            if (res.code === 0) {
-                                url = res.data ? (res.data[0] ? res.data[0].return : '') : ''
-                            } else if (res.code === 1) {
-                                url = ''
-                            } else {
-                                throw new Error(res.msg)
-                            }
-                        }
-                    })
-                } catch (e) {
-                    console.log(e)
-                }
-                return await `<div><img height="40" width="40" src="${url}"/><br/>${this.getTierName(row)}<div>`
+                return `<div>${this.getTierName(row)}<div>`
             },
             // 获取段位名称
             getTierName(row) {
@@ -235,12 +229,30 @@
             rowClick(row) {
                 if (row && row.qquin) {
                     this.$router.push({
-                        name: 'user',
+                        path: '/user',
                         params: {
-                            id: row.qquin
+                            qquin: row.qquin,
+                            vaid: row.area_id
                         }
                     })
                 }
+            },
+            // 观看视频
+            viewVideo(obj) {
+                if (obj && obj.content) {
+                    this.$router.push({
+                        path: '/video/videoDetail',
+                        query: {
+                            v: obj.content
+                        }
+                    })
+                }
+            },
+            // 跳转到视频主页
+            viewMoreVideo() {
+                this.$router.push({
+                    path: '/video'
+                })
             },
             // 点击图标刷新页面
             reload() {
@@ -322,6 +334,38 @@
                                     color:#20a0ff;
                                     text-decoration: underline;
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .card-block {
+                .first{
+                    img {
+                        width:100%;
+                        height: auto;
+                    }
+                    .card-content {
+                        position: fixed;
+                        bottom: 0;
+                        width:100%; 
+                        height: 56px;
+                        padding: 5px 10px;
+                        background-color: rgba(87, 97, 111, .6);
+
+                        .card-title{
+                            color:#fff;
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+
+                        .card-button{
+                            color:#20a0ff;
+                            text-align: right;
+                            &:hover {
+                                text-decoration: underline;
                             }
                         }
                     }

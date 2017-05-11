@@ -1,10 +1,10 @@
 /**
  * 定义获取数据的通用方法
  */
-import { baseUrl, token, contentType } from './env'
+import { baseUrl, vbaseUrl, token, vtoken, contentType } from './env'
 import axios from 'axios'
 
-export default async(type = 'get', url = '', params = {}, mothod = 'axios') => {
+export default async(type = 'get', url = '', params = {}, mothod = 'axios', isVideo = false) => {
     let res = null
         // 使用axios
     if (mothod === 'axios') {
@@ -12,12 +12,12 @@ export default async(type = 'get', url = '', params = {}, mothod = 'axios') => {
         await axios({
             method: type,
             url: url,
-            baseURL: baseUrl,
+            baseURL: isVideo ? vbaseUrl : baseUrl,
             // `params` are the URL parameters to be sent with the request
             params: params,
             headers: {
                 'Content-Type': contentType,
-                [token.key]: token.value
+                [isVideo ? vtoken.key : token.key]: isVideo ? vtoken.value : token.value
             },
             // `data` is the data to be sent as the request body
             // Only applicable for request methods 'PUT', 'POST', and 'PATCH'
@@ -64,7 +64,7 @@ export default async(type = 'get', url = '', params = {}, mothod = 'axios') => {
         await new Promise(function (resolve, reject) {
             // 使用原生js
             let requestObj
-            url = baseUrl + url
+            url = isVideo ? vbaseUrl + url : baseUrl + url
             type = type.toUpperCase()
 
             if (type === 'GET') {
@@ -101,7 +101,7 @@ export default async(type = 'get', url = '', params = {}, mothod = 'axios') => {
 
             requestObj.open(type, url, true)
             requestObj.setRequestHeader('Content-type', contentType)
-            requestObj.setRequestHeader(token.key, token.value)
+            requestObj.setRequestHeader(isVideo ? vtoken.key : token.key, isVideo ? vtoken.value : token.value)
             requestObj.onreadystatechange = () => {
                 if (requestObj.readyState === 4) {
                     if (requestObj.status === 200) {

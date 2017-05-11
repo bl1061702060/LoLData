@@ -34,6 +34,13 @@ module.exports = {
                 pathRewrite: {
                     '^/api': ''
                 }
+            },
+            '/vapi': {
+                target: 'http://infoapi.games-cube.com',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/vapi': ''
+                }
             }
         },
         // CSS Sourcemaps off by default because relative paths are "buggy"
