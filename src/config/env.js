@@ -27,8 +27,8 @@ if (process.env.NODE_ENV === 'development') {
     }
     contentType = 'text/html; charset=utf-8'
 } else {
-    baseUrl = '/api'
-    vbaseUrl = '/vapi'
+    baseUrl = 'http://lolapi.games-cube.com'
+    vbaseUrl = 'http://infoapi.games-cube.com'
     routerMode = 'hash'
     token = {
         'key': 'DAIWAN-API-TOKEN',
