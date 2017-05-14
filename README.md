@@ -45,3 +45,6 @@ npm test
     }
     contentType = 'text/html; charset=utf-8'
 ```
+
+## 2. 项目Demo
+    https://bl1061702060.github.io/LoLData
