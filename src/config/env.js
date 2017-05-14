@@ -19,11 +19,11 @@ if (process.env.NODE_ENV === 'development') {
     routerMode = 'hash'
     token = {
         'key': 'DAIWAN-API-TOKEN',
-        'value': '5954F-B3B3B-AA81B-3BFC3'
+        'value': 'A8F53-71123-A3217-AAF83'
     }
     vtoken = {
         'key': 'DAIWAN-API-TOKEN',
-        'value': 'F8BFF-B893B-ABBB7-744BB'
+        'value': 'CA4FC-65DA1-234C4-D86CC'
     }
     contentType = 'text/html; charset=utf-8'
 } else {
@@ -32,11 +32,11 @@ if (process.env.NODE_ENV === 'development') {
     routerMode = 'hash'
     token = {
         'key': 'DAIWAN-API-TOKEN',
-        'value': '5954F-B3B3B-AA81B-3BFC3'
+        'value': 'A8F53-71123-A3217-AAF83'
     }
     vtoken = {
         'key': 'DAIWAN-API-TOKEN',
-        'value': 'F8BFF-B893B-ABBB7-744BB'
+        'value': 'CA4FC-65DA1-234C4-D86CC'
     }
     contentType = 'text/html; charset=utf-8'
 }
