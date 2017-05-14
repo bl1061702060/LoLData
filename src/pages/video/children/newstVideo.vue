@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="card-block">
-            <el-card v-for="item in videoList" :body-style="{ padding: '0px' }" class="card">
+            <el-card v-for="item in videoList" :body-style="{ padding: '0px' }" class="card" :key="item.vid">
                 <img :src=item.img class="image">
                 <div class="card-content">
                     <div class="card-title">{{item.title}}</div>
