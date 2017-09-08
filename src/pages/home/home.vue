@@ -221,7 +221,7 @@
                         }
                     }
                 } else {
-                    this.searchHistory.shift(this.searchValue)
+                    this.searchHistory.unshift(this.searchValue)
                 }
                 setStorage('searchHistory', this.searchHistory)
             },
